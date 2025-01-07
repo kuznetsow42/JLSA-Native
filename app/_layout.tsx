@@ -7,15 +7,12 @@ import "react-native-reanimated";
 
 import "../styles.css";
 import { useColorScheme } from "nativewind";
-import AuthScreen from "./authScreen";
-import { useUserStore } from "@/utils/store";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const { setColorScheme } = useColorScheme();
-  const user = useUserStore((state) => state.user);
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -35,12 +32,11 @@ export default function RootLayout() {
     return null;
   }
 
-  return !user ? (
-    <AuthScreen />
-  ) : (
+  return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="stack" options={{ headerShown: false }} />
+      <Stack.Screen name="authScreen" options={{ headerShown: false }} />
     </Stack>
   );
 }

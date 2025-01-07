@@ -10,18 +10,18 @@ import {
 
 import Button from "@/components/Buttons";
 import ThemedText from "@/components/ThemedText";
-import { axiosInstance } from "@/utils/axios";
+import axiosInstance from "@/utils/axios";
 import * as SecureStore from "expo-secure-store";
 import { useUserStore } from "@/utils/store";
+import { router } from "expo-router";
 
 export default function AuthScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const axios = axiosInstance;
-  const { user, setUser } = useUserStore();
+  const { setUser } = useUserStore();
 
   const Register = () => {
-    axios
+    axiosInstance
       .post("users/auth/register/", {
         username: username,
         password: password,
@@ -38,8 +38,8 @@ export default function AuthScreen() {
   };
 
   const SignIn = () => {
-    axios
-      .post("http://192.168.1.100:8000/api/v1/users/auth/login/", {
+    axiosInstance
+      .post("users/auth/login/", {
         username: username,
         password: password,
         client: "JLSANative!",
@@ -54,7 +54,8 @@ export default function AuthScreen() {
 
       .then((response) => {
         setUser(response.data.user);
-        SecureStore.setItemAsync("jwt", response.data.token);
+        SecureStore.setItemAsync("token", response.data.token);
+        router.back();
       });
   };
 
@@ -69,14 +70,14 @@ export default function AuthScreen() {
         </ThemedText>
         <View className="gap-4">
           <Button
-            onPress={() => setUser({ usename: "Guest" })}
+            onPress={() => {
+              setUser("Guest");
+              router.back();
+            }}
             colors="dark:bg-gray-600 bg-white"
           >
             Continue as guest
           </Button>
-          <Pressable className="bg-gray-900 gap-4 p-4 flex-row">
-            <ThemedText className="text-2xl">Continue as guest</ThemedText>
-          </Pressable>
           <Pressable className="bg-blue-900 gap-4 p-4 flex-row justify-between">
             <ThemedText className="text-2xl">Use GitHub</ThemedText>
             <FontAwesome name="github" size={28} />

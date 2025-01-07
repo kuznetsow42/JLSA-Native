@@ -12,12 +12,13 @@ import {
 import { useColorScheme } from "nativewind";
 import ThemedText from "@/components/ThemedText";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 import { useUserStore } from "@/utils/store";
+import { router } from "expo-router";
 
 export default function Settings() {
   const { colorScheme, setColorScheme } = useColorScheme();
   const { user, setUser } = useUserStore();
-  console.log(user);
 
   const changeColorSheme = (sheme: "light" | "dark" | "system") => {
     setColorScheme(sheme);
@@ -51,7 +52,16 @@ export default function Settings() {
         <ThemedText className="text-5xl text-center text-white">
           Settings
         </ThemedText>
-        <Pressable onPress={() => setUser(null)}>
+        <Pressable
+          onPress={() => {
+            if (user === "Guest") {
+              router.push("/authScreen", { headerShown: false });
+            } else {
+              setUser("Guest");
+              SecureStore.deleteItemAsync("token");
+            }
+          }}
+        >
           {user?.avatar ? (
             <Image
               source={{ uri: user.avatar }}
