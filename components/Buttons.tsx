@@ -1,21 +1,22 @@
 import { ReactNode } from "react";
-import { Pressable, Text } from "react-native";
+import { Pressable } from "react-native";
+import ThemedText from "./ThemedText";
 
 export default function Button({
   onPress,
-  colors,
+  className,
   children,
 }: {
   onPress: () => void;
-  colors?: string;
+  className?: string;
   children: ReactNode;
 }) {
   return (
     <Pressable
-      className={`${colors} gap-4 p-4 flex-row justify-between`}
+      className={`${className} gap-4 p-4 flex-row justify-between`}
       onPress={onPress}
     >
-      <Text className="text-2xl">{children}</Text>
+      <ThemedText className="text-2xl">{children}</ThemedText>
     </Pressable>
   );
 }
