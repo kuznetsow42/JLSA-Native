@@ -4,14 +4,14 @@ import { SafeAreaView, StatusBar, View } from "react-native";
 import { useState, useEffect } from "react";
 import { CardProps } from "@/types/state";
 import { getRandomElement, shuffleArray } from "@/utils/math";
+import { router } from "expo-router";
 
 const MatchGame = (
   questionType: "definitions" | "readings" = "definitions"
 ) => {
-  const cards = [...useCardsStore((state) => state.cards)];
-  const [words, setWords] = useState(
-    Array.from({ length: 5 }, () => cards.pop()!)
-  );
+  const storedCards = useCardsStore((state) => state.cards);
+  const [cards, setCards] = useState(storedCards.slice(0, -5));
+  const [words, setWords] = useState(storedCards.slice(-5));
   const [answers, setAnswers] = useState<{ id: number; text: string }[]>([]);
   const [leftItem, setLeftItem] = useState<{ id: number; text: string } | null>(
     null
@@ -44,7 +44,13 @@ const MatchGame = (
       setRightItem(null);
       if (results.length + 1 === words.length) {
         setResults([]);
-        setWords(Array.from({ length: 5 }, () => cards.pop()!));
+        if (cards.length < 5) {
+          router.back();
+        } else {
+          const nextWords = cards.slice(-5);
+          setWords(nextWords);
+          setCards(cards.slice(0, -5));
+        }
       }
     }
   }, [leftItem, rigthItem]);
