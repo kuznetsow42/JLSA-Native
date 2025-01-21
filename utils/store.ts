@@ -24,8 +24,13 @@ export const useUserStore = create(
 interface CardsStore {
   cards: CardProps[];
   tags: TagProps[];
+  studiedCards: CardProps[];
+  updated: Date | null;
   setCards: (cards: CardProps[]) => void;
   setTags: (tags: TagProps[]) => void;
+  updateStreak: (cardsToUpdate: CardProps[]) => void;
+  addStudiedCard: (card: CardProps) => void;
+  clearStudiedCards: () => void;
 }
 
 export const useCardsStore = create(
@@ -33,11 +38,29 @@ export const useCardsStore = create(
     (set, get) => ({
       cards: [],
       tags: [],
+      studiedCards: [],
+      updated: null,
       setCards: (cards) => {
         set({ cards });
       },
       setTags: (tags) => {
         set({ tags });
+      },
+      clearStudiedCards: () => set({ studiedCards: [] }),
+      addStudiedCard: (card) =>
+        set({ studiedCards: [...get().studiedCards, card] }),
+      updateStreak: async (cardsToUpdate) => {
+        set({
+          cards: get().cards.map((card) => {
+            if (
+              cardsToUpdate.some((cardToUpdate) => card.id === cardToUpdate.id)
+            ) {
+              get().addStudiedCard(card);
+              return { ...card, streak: card.streak + 1 };
+            }
+            return card;
+          }),
+        });
       },
     }),
     {
