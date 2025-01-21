@@ -8,12 +8,11 @@ import {
   View,
 } from "react-native";
 
-import Button from "@/components/Buttons";
-import ThemedText from "@/components/ThemedText";
 import axiosInstance from "@/utils/axios";
 import * as SecureStore from "expo-secure-store";
 import { useUserStore } from "@/utils/store";
 import { router } from "expo-router";
+import { Button, Text } from "react-native-paper";
 
 export default function AuthScreen() {
   const [username, setUsername] = useState("");
@@ -53,8 +52,8 @@ export default function AuthScreen() {
       })
 
       .then((response) => {
-        setUser(response.data.user);
         SecureStore.setItemAsync("token", response.data.token);
+        setUser(response.data.user);
         router.back();
       });
   };
@@ -65,21 +64,21 @@ export default function AuthScreen() {
         className="bg-red-100 h-full w-full flex p-16 justify-evenly "
         source={require("../assets/images/backgrounds/auth.jpeg")}
       >
-        <ThemedText className="text-center text-5xl text-white p-6 bg-[#aeff0047]">
+        <Text className="text-center text-5xl text-white p-6 bg-[#aeff0047]">
           JLSA
-        </ThemedText>
+        </Text>
         <View className="gap-4">
           <Button
             onPress={() => {
               setUser("Guest");
               router.back();
             }}
-            colors="dark:bg-gray-600 bg-white"
+            buttonColor="gray"
           >
             Continue as guest
           </Button>
           <Pressable className="bg-blue-900 gap-4 p-4 flex-row justify-between">
-            <ThemedText className="text-2xl">Use GitHub</ThemedText>
+            <Text className="text-2xl">Use GitHub</Text>
             <FontAwesome name="github" size={28} />
           </Pressable>
         </View>
@@ -108,9 +107,9 @@ export default function AuthScreen() {
               className="bg-red-500 gap-4 p-4 flex-row justify-between"
               onPress={Register}
             >
-              <ThemedText className="text-2xl">SignUp</ThemedText>
+              <Text className="text-2xl">SignUp</Text>
             </Pressable>
-            <Button colors="bg-green-700" onPress={SignIn}>
+            <Button buttonColor="green" onPress={SignIn}>
               Sign In
             </Button>
           </View>

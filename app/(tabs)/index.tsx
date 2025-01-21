@@ -1,5 +1,5 @@
-import ThemedText from "@/components/ThemedText";
 import { Image, SafeAreaView, StatusBar } from "react-native";
+import { Text } from "react-native-paper";
 
 export default function HomeScreen() {
   return (
@@ -9,7 +9,7 @@ export default function HomeScreen() {
         source={require("@/assets/images/homeImage.jpeg")}
         className="w-full h-52"
       />
-      <ThemedText className="text-5xl text-center pt-4">Home Page</ThemedText>
+      <Text className="text-5xl text-center pt-4">Home Page</Text>
     </SafeAreaView>
   );
 }

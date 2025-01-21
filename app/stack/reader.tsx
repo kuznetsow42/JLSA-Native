@@ -1,6 +1,6 @@
-import ThemedText from "@/components/ThemedText";
 import { useState } from "react";
 import { Button, Pressable, SafeAreaView, StatusBar, View } from "react-native";
+import { Text } from "react-native-paper";
 
 export default function Reader() {
   const book = [
@@ -100,26 +100,22 @@ export default function Reader() {
       <View className="flex-row flex-wrap p-4 h-full">
         {book.map((item, key) => (
           <Pressable onPress={() => setWord(item)} key={key}>
-            <ThemedText
-              style={{ color: colors[key % colors.length], fontSize: 24 }}
-            >
+            <Text style={{ color: colors[key % colors.length], fontSize: 24 }}>
               {item.lemma}
-            </ThemedText>
+            </Text>
           </Pressable>
         ))}
         {word && (
           <View className="absolute w-screen min-h-48 bottom-0 bg-gray-400">
             <View className="flex-row dark:bg-slate-600">
-              <ThemedText className="text-green-900 text-2xl bg-green-400 px-2">
+              <Text className="text-green-900 text-2xl bg-green-400 px-2">
                 4
-              </ThemedText>
-              <ThemedText className="text-center grow text-2xl">
-                {word.lemma}
-              </ThemedText>
+              </Text>
+              <Text className="text-center grow text-2xl">{word.lemma}</Text>
               <Button title="Close" onPress={() => setWord(null)} />
             </View>
             <View className="grow p-2">
-              <ThemedText>{word.reading}</ThemedText>
+              <Text>{word.reading}</Text>
             </View>
             <View className="flex-row justify-between p-2">
               <Button title="Mark learned" color={"green"} />

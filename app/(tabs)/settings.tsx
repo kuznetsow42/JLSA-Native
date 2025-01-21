@@ -10,11 +10,11 @@ import {
 } from "react-native";
 
 import { useColorScheme } from "nativewind";
-import ThemedText from "@/components/ThemedText";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 import { useUserStore } from "@/utils/store";
 import { router } from "expo-router";
+import { Text } from "react-native-paper";
 
 export default function Settings() {
   const { colorScheme, setColorScheme } = useColorScheme();
@@ -34,7 +34,7 @@ export default function Settings() {
   }) => {
     return (
       <View className="flex-row p-1 justify-between items-center text-2xl">
-        <ThemedText className="text-white text-2xl">{title}</ThemedText>
+        <Text className="text-white text-2xl">{title}</Text>
         {children}
       </View>
     );
@@ -49,13 +49,11 @@ export default function Settings() {
       }}
     >
       <View className="flex-row p-1 justify-between">
-        <ThemedText className="text-5xl text-center text-white">
-          Settings
-        </ThemedText>
+        <Text className="text-5xl text-center text-white">Settings</Text>
         <Pressable
           onPress={() => {
             if (user === "Guest") {
-              router.push("/authScreen", { headerShown: false });
+              router.push("/authScreen");
             } else {
               setUser("Guest");
               SecureStore.deleteItemAsync("token");

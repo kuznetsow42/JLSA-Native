@@ -3,10 +3,10 @@ import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import { FlatList, Image, SafeAreaView, StatusBar, View } from "react-native";
-import ThemedText from "@/components/ThemedText";
 
 import * as Picker from "expo-document-picker";
 import { useColorScheme } from "nativewind";
+import { Text } from "react-native-paper";
 
 export default function Library() {
   type ItemProp = { id: string; title: string; cover: string };
@@ -59,7 +59,7 @@ export default function Library() {
     return (
       <LibraryItem onPress={() => router.push("/stack/reader")}>
         <Image source={{ uri: item.cover }} className="h-56" />
-        <ThemedText className="text-2xl text-center">{item.title}</ThemedText>
+        <Text className="text-2xl text-center">{item.title}</Text>
       </LibraryItem>
     );
   };
@@ -82,7 +82,7 @@ export default function Library() {
           >
             <View className="flex-1 items-center justify-center pb-4">
               <FontAwesome name="plus-circle" size={68} color="white" />
-              <ThemedText className="text-2xl ">Add book</ThemedText>
+              <Text className="text-2xl ">Add book</Text>
             </View>
           </LibraryItem>
         }
