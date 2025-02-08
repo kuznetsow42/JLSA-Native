@@ -12,13 +12,14 @@ import {
 import { useColorScheme } from "nativewind";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
-import { useUserStore } from "@/utils/store";
+import { useCardsStore, useUserStore } from "@/utils/store";
 import { router } from "expo-router";
-import { Text } from "react-native-paper";
+import { IconButton, Text } from "react-native-paper";
 
 export default function Settings() {
   const { colorScheme, setColorScheme } = useColorScheme();
   const { user, setUser } = useUserStore();
+  const { fetchDecks } = useCardsStore();
 
   const changeColorSheme = (sheme: "light" | "dark" | "system") => {
     setColorScheme(sheme);
@@ -92,6 +93,14 @@ export default function Settings() {
       </Setting>
       <Setting title="Notifications">
         <Button title="turn on" />
+      </Setting>
+      <Setting title="Sync cards">
+        <IconButton
+          icon="refresh"
+          iconColor="blue"
+          size={36}
+          onPress={() => fetchDecks()}
+        />
       </Setting>
     </SafeAreaView>
   );
