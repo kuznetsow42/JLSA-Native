@@ -7,7 +7,10 @@ export type UserProps =
     }
   | "Guest";
 
-export interface TagProps {
+export interface DeckProps {
+  cards: CardProps[];
+  cover: string;
+  sub_decks: DeckProps[];
   name: string;
   id: number;
 }
@@ -31,11 +34,11 @@ interface DictEntryProps {
 }
 
 export interface CardProps {
-  created: Date;
+  created: string;
   dict_entry: DictEntryProps;
   id: number;
   learned: boolean;
   streak: number;
-  tags: TagProps[];
-  visited: Date;
+  deck: DeckProps;
+  visited: string;
 }

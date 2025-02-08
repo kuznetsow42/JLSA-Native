@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { CardProps, TagProps, UserProps } from "@/types/state";
+import { CardProps, DeckProps, UserProps } from "@/types/state";
 import { FileSystemAPI, SecureStoreAPI } from "./storeAPIs";
+import axiosInstance from "./axios";
 
 interface UserStore {
   user: UserProps;
@@ -23,44 +24,72 @@ export const useUserStore = create(
 
 interface CardsStore {
   cards: CardProps[];
-  tags: TagProps[];
+  decks: DeckProps[];
   studiedCards: CardProps[];
-  updated: Date | null;
-  setCards: (cards: CardProps[]) => void;
-  setTags: (tags: TagProps[]) => void;
+  updated: number | null;
+  fetchDecks: () => void;
+  deleteDeck: (id: number) => void;
   updateStreak: (cardsToUpdate: CardProps[]) => void;
   addStudiedCard: (card: CardProps) => void;
   clearStudiedCards: () => void;
+  syncData: () => void;
 }
 
 export const useCardsStore = create(
   persist<CardsStore>(
     (set, get) => ({
       cards: [],
-      tags: [],
+      decks: [],
       studiedCards: [],
       updated: null,
-      setCards: (cards) => {
-        set({ cards });
+      fetchDecks: () => {
+        axiosInstance
+          .get("cards/")
+          .then((response) => set({ cards: response.data }));
+        axiosInstance
+          .get("cards/decks/")
+          .then((response) => set({ decks: response.data }));
+        set({ updated: Date.now() });
       },
-      setTags: (tags) => {
-        set({ tags });
+      deleteDeck: (id) => {
+        axiosInstance.delete(`cards/decks/${id}/`);
       },
       clearStudiedCards: () => set({ studiedCards: [] }),
       addStudiedCard: (card) =>
-        set({ studiedCards: [...get().studiedCards, card] }),
+        set({
+          studiedCards: [
+            ...get().studiedCards.filter((sCard) => sCard.id !== card.id),
+            card,
+          ],
+        }),
       updateStreak: async (cardsToUpdate) => {
         set({
           cards: get().cards.map((card) => {
             if (
               cardsToUpdate.some((cardToUpdate) => card.id === cardToUpdate.id)
             ) {
-              get().addStudiedCard(card);
-              return { ...card, streak: card.streak + 1 };
+              const updatedCard = {
+                ...card,
+                streak: card.streak + 1,
+                visited: new Date().toISOString(),
+              };
+              get().addStudiedCard(updatedCard);
+              return updatedCard;
             }
             return card;
           }),
         });
+      },
+      syncData: () => {
+        const cards = get().studiedCards;
+        cards.length &&
+          axiosInstance
+            .patch("cards/sync/", {
+              cards: cards,
+            })
+            .then(() => {
+              get().clearStudiedCards();
+            });
       },
     }),
     {
