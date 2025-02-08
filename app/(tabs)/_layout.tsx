@@ -32,6 +32,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="decks"
+        options={{
+          title: "Decks",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="file-word-o" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="games"
+        options={{
+          title: "Games",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="gamepad" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="library"
         options={{
           title: "Library",
