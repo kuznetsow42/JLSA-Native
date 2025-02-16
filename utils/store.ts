@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { CardProps, DeckProps, UserProps } from "@/types/state";
+import {
+  CardProps,
+  CardRelationProps,
+  DeckProps,
+  SelectedCardsProps,
+  SubDeckProps,
+  UserProps,
+} from "@/types/state";
 import { FileSystemAPI, SecureStoreAPI } from "./storeAPIs";
 import axiosInstance from "./axios";
 
@@ -25,10 +32,13 @@ export const useUserStore = create(
 interface CardsStore {
   cards: CardProps[];
   decks: DeckProps[];
+  selectedDeck: SubDeckProps | null;
+  selectedCards: SelectedCardsProps[];
   studiedCards: CardProps[];
   updated: number | null;
   fetchDecks: () => void;
   deleteDeck: (id: number) => void;
+  choseDeck: (deck: SubDeckProps) => void;
   updateStreak: (cardsToUpdate: CardProps[]) => void;
   addStudiedCard: (card: CardProps) => void;
   clearStudiedCards: () => void;
@@ -40,6 +50,8 @@ export const useCardsStore = create(
     (set, get) => ({
       cards: [],
       decks: [],
+      selectedDeck: null,
+      selectedCards: [],
       studiedCards: [],
       updated: null,
       fetchDecks: () => {
@@ -54,6 +66,20 @@ export const useCardsStore = create(
       deleteDeck: (id) => {
         axiosInstance.delete(`cards/decks/${id}/`);
       },
+      choseDeck: async (deck) => {
+        set({ selectedDeck: deck });
+        set((state) => {
+          return {
+            selectedCards: deck.card_relations.map((relation) => {
+              return {
+                ...relation,
+                card: state.cards.find((card) => card.id == relation.card)!,
+              };
+            }),
+          };
+        });
+      },
+
       clearStudiedCards: () => set({ studiedCards: [] }),
       addStudiedCard: (card) =>
         set({

@@ -9,9 +9,14 @@ import { router } from "expo-router";
 const MatchGame = (
   questionType: "definitions" | "readings" = "definitions"
 ) => {
-  const storedCards = useCardsStore((state) => state.cards);
-  const [cards, setCards] = useState(storedCards.slice(0, -5));
-  const [words, setWords] = useState(storedCards.slice(-5));
+  const storedCards = useCardsStore((state) => state.selectedCards);
+  const updateStreak = useCardsStore((state) => state.updateStreak);
+  const [cards, setCards] = useState(
+    storedCards.slice(0, -5).map((item) => item.card)
+  );
+  const [words, setWords] = useState(
+    storedCards.slice(-5).map((item) => item.card)
+  );
   const [answers, setAnswers] = useState<{ id: number; text: string }[]>([]);
   const [leftItem, setLeftItem] = useState<{ id: number; text: string } | null>(
     null
@@ -43,6 +48,7 @@ const MatchGame = (
       setLeftItem(null);
       setRightItem(null);
       if (results.length + 1 === words.length) {
+        updateStreak(results);
         setResults([]);
         if (cards.length < 5) {
           router.back();

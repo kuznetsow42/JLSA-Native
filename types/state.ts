@@ -7,10 +7,27 @@ export type UserProps =
     }
   | "Guest";
 
+export interface CardRelationProps {
+  card: number;
+  examples: string[];
+  frequency: number;
+}
+
+export interface SelectedCardsProps {
+  card: CardProps;
+  examples: string[];
+  frequency: number;
+}
+
+export interface SubDeckProps {
+  name: string;
+  id: number;
+  card_relations: CardRelationProps[];
+}
+
 export interface DeckProps {
-  cards: CardProps[];
   cover: string;
-  sub_decks: DeckProps[];
+  sub_decks: SubDeckProps[];
   name: string;
   id: number;
 }
