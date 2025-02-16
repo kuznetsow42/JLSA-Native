@@ -2,9 +2,8 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import {
   CardProps,
-  CardRelationProps,
   DeckProps,
-  SelectedCardsProps,
+  SelectedCardProps,
   SubDeckProps,
   UserProps,
 } from "@/types/state";
@@ -33,7 +32,7 @@ interface CardsStore {
   cards: CardProps[];
   decks: DeckProps[];
   selectedDeck: SubDeckProps | null;
-  selectedCards: SelectedCardsProps[];
+  selectedCards: SelectedCardProps[];
   studiedCards: CardProps[];
   updated: number | null;
   fetchDecks: () => void;

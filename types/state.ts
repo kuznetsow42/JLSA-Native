@@ -7,13 +7,13 @@ export type UserProps =
     }
   | "Guest";
 
-export interface CardRelationProps {
+interface CardRelationProps {
   card: number;
   examples: string[];
   frequency: number;
 }
 
-export interface SelectedCardsProps {
+export interface SelectedCardProps {
   card: CardProps;
   examples: string[];
   frequency: number;
