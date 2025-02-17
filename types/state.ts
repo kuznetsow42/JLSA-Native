@@ -32,7 +32,7 @@ export interface DeckProps {
   id: number;
 }
 
-interface KanjiProps {
+export interface KanjiProps {
   id: number;
   kun: string[];
   on: string[];

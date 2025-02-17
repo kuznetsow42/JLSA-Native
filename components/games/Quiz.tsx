@@ -1,7 +1,7 @@
 import { Button, Text } from "react-native-paper";
 import { useCardsStore } from "@/utils/store";
 import { View } from "react-native";
-import { CardProps } from "@/types/state";
+import { SelectedCardProps } from "@/types/state";
 import { getRandomElement, shuffleArray } from "@/utils/math";
 import { useState } from "react";
 
@@ -9,12 +9,12 @@ const Quiz = ({
   card,
   returnAnswer,
 }: {
-  card: CardProps;
+  card: SelectedCardProps;
   returnAnswer: (isCorrect: boolean) => void;
 }) => {
   const cards = useCardsStore((state) => state.cards);
   const entries = shuffleArray([
-    card.dict_entry,
+    card.card.dict_entry,
     ...[...Array(3)].map(() => getRandomElement(cards).dict_entry),
   ]);
 
@@ -24,7 +24,7 @@ const Quiz = ({
     setAnswer(reading);
     setTimeout(() => {
       setAnswer("");
-      returnAnswer(reading === card.dict_entry.reading);
+      returnAnswer(reading === card.card.dict_entry.reading);
     }, 1800);
   };
 
@@ -33,12 +33,12 @@ const Quiz = ({
       <View className="flex-1 dark:bg-slate-800 bg-gray-100 p-4">
         <View className="flex-1 justify-center">
           <Text className="text-4xl text-center font-bold">
-            {card.dict_entry.word}
+            {card.card.dict_entry.word}
           </Text>
-          {answer !== card.dict_entry.reading ? (
+          {answer !== card.card.dict_entry.reading ? (
             <View>
               <Text className="text-4xl text-center font-bold">
-                {card.dict_entry.reading}
+                {card.card.dict_entry.reading}
               </Text>
               <Text
                 className="text-4xl text-center font-bold"
@@ -52,7 +52,7 @@ const Quiz = ({
               className="text-4xl text-center font-bold"
               style={{ color: "green" }}
             >
-              {card.dict_entry.reading}
+              {card.card.dict_entry.reading}
             </Text>
           )}
         </View>
@@ -63,10 +63,15 @@ const Quiz = ({
     return (
       <View className="flex-1 dark:bg-slate-800 bg-gray-100 p-4">
         <Text className="text-center">Select right reading</Text>
-        <View className="flex-1 justify-center">
+        <View className="flex-1 justify-around ">
           <Text className="text-4xl text-center font-bold">
-            {card.dict_entry.word}
+            {card.card.dict_entry.word}
           </Text>
+
+          <Text className="text-center font-bold">
+            {getRandomElement(card.examples)}
+          </Text>
+
           <View className="flex-row flex-wrap justify-center items-center gap-4 pt-10">
             {entries.map((item, key) => (
               <Button
