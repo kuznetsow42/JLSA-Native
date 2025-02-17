@@ -38,7 +38,9 @@ interface CardsStore {
   fetchDecks: () => void;
   deleteDeck: (id: number) => void;
   choseDeck: (deck: SubDeckProps) => void;
+  filterCards: () => void;
   updateStreak: (cardsToUpdate: CardProps[]) => void;
+  markLearned: (cardsToUpdate: CardProps[]) => void;
   addStudiedCard: (card: CardProps) => void;
   clearStudiedCards: () => void;
   syncData: () => void;
@@ -67,14 +69,21 @@ export const useCardsStore = create(
       },
       choseDeck: async (deck) => {
         set({ selectedDeck: deck });
+        get().filterCards();
+      },
+      filterCards: () => {
         set((state) => {
-          return {
-            selectedCards: deck.card_relations.map((relation) => {
-              return {
+          const cards: SelectedCardProps[] = [];
+          state.selectedDeck!.card_relations.forEach((relation) => {
+            const card = state.cards.find((card) => card.id == relation.card)!;
+            !card.learned &&
+              cards.push({
                 ...relation,
-                card: state.cards.find((card) => card.id == relation.card)!,
-              };
-            }),
+                card: card,
+              });
+          });
+          return {
+            selectedCards: cards,
           };
         });
       },
@@ -104,6 +113,26 @@ export const useCardsStore = create(
             return card;
           }),
         });
+        get().filterCards();
+      },
+      markLearned: async (cardsToUpdate) => {
+        set({
+          cards: get().cards.map((card) => {
+            if (
+              cardsToUpdate.some((cardToUpdate) => card.id === cardToUpdate.id)
+            ) {
+              const updatedCard = {
+                ...card,
+                learned: true,
+                visited: new Date().toISOString(),
+              };
+              get().addStudiedCard(updatedCard);
+              return updatedCard;
+            }
+            return card;
+          }),
+        });
+        get().filterCards();
       },
       syncData: () => {
         const cards = get().studiedCards;
