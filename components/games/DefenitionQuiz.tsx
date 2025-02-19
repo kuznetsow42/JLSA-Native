@@ -54,7 +54,6 @@ const DefenitionQuiz = ({
 
       <View className="flex-row flex-wrap justify-center items-stretch gap-4 pt-4">
         {entries.map((entry, key) => {
-          console.log(entry, isCorrect, pressedDef);
           let background = "bg-orange-400";
           if (!isCorrect && pressedDef === entry) {
             background = "bg-red-900";

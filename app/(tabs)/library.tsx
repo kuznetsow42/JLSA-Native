@@ -7,11 +7,15 @@ import { FlatList, Image, SafeAreaView, StatusBar, View } from "react-native";
 import * as Picker from "expo-document-picker";
 import { useColorScheme } from "nativewind";
 import { Text } from "react-native-paper";
+import axiosInstance from "@/utils/axios";
+import { useCardsStore } from "@/utils/store";
 
 export default function Library() {
   type ItemProp = { id: string; title: string; cover: string };
 
   const { colorScheme } = useColorScheme();
+
+  const fetchDecks = useCardsStore((state) => state.fetchDecks);
 
   const library = [
     {
@@ -43,16 +47,33 @@ export default function Library() {
   const [books, setBooks] = useState(library);
 
   const getBook = (file: Picker.DocumentPickerResult) => {
-    setBooks([
-      ...books,
-      {
-        id: "18",
-        cover:
-          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.I3AmPlEro2fibdCm5A5UyAHaKg%26pid%3DApi&f=1&ipt=8a5bc53f52b6769bb642220d80c4c26ad3d280fc76f171f1642257021b43d79a&ipo=images",
+    const data = new FormData();
+    const fileData = file.assets![0];
+    data.append("file", {
+      uri: fileData.uri,
+      name: fileData.name,
+      type: fileData.mimeType,
+    });
 
-        title: "Hana San",
-      },
-    ]);
+    axiosInstance
+      .post("parser/parse_book/", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(() => {
+        setBooks([
+          ...books,
+          {
+            id: "18",
+            cover:
+              "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.I3AmPlEro2fibdCm5A5UyAHaKg%26pid%3DApi&f=1&ipt=8a5bc53f52b6769bb642220d80c4c26ad3d280fc76f171f1642257021b43d79a&ipo=images",
+
+            title: "Hana San",
+          },
+        ]);
+        fetchDecks();
+      });
   };
 
   const RenderItem = (item: ItemProp) => {
