@@ -5,6 +5,7 @@ import Quiiz from "@/components/games/Quiz";
 import { Button, IconButton, ProgressBar } from "react-native-paper";
 import { router, useLocalSearchParams } from "expo-router";
 import SpellCheck from "@/components/games/SpellCheck";
+import DefenitionQuiz from "@/components/games/DefenitionQuiz";
 
 const Study = () => {
   const cards = useCardsStore((state) => state.selectedCards);
@@ -40,6 +41,15 @@ const Study = () => {
 
   const renderGame = () => {
     if (game === "Quiz") {
+      if (currentCard.card.streak < 6) {
+        return (
+          <DefenitionQuiz
+            card={currentCard.card}
+            examples={currentCard.examples}
+            returnAnswer={checkAnswer}
+          />
+        );
+      }
       return <Quiiz card={currentCard} returnAnswer={checkAnswer} />;
     } else if (game === "Spelling") {
       return <SpellCheck relation={currentCard} returnAnswer={checkAnswer} />;
