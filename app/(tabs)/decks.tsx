@@ -28,7 +28,7 @@ const Decks = () => {
             <Card.Content>
               <Text>{deck.sub_decks.length} chapter(s)</Text>
               <FlatList
-                className={`${openedDeck === deck.id && "hidden"} mt-10 gap-4`}
+                className={`${openedDeck !== deck.id && "hidden"} mt-10 gap-4`}
                 data={deck.sub_decks}
                 renderItem={({ item: subDeck }) => (
                   <Card
