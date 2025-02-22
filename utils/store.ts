@@ -116,21 +116,25 @@ export const useCardsStore = create(
         get().filterCards();
       },
       markLearned: async (cardsToUpdate) => {
-        set({
-          cards: get().cards.map((card) => {
-            if (
-              cardsToUpdate.some((cardToUpdate) => card.id === cardToUpdate.id)
-            ) {
-              const updatedCard = {
-                ...card,
-                learned: true,
-                visited: new Date().toISOString(),
-              };
-              get().addStudiedCard(updatedCard);
-              return updatedCard;
-            }
-            return card;
-          }),
+        set((state) => {
+          return {
+            cards: state.cards.map((card) => {
+              if (
+                cardsToUpdate.some(
+                  (cardToUpdate) => card.id === cardToUpdate.id
+                )
+              ) {
+                const updatedCard = {
+                  ...card,
+                  learned: true,
+                  visited: new Date().toISOString(),
+                };
+                get().addStudiedCard(updatedCard);
+                return updatedCard;
+              }
+              return card;
+            }),
+          };
         });
         get().filterCards();
       },
@@ -145,6 +149,31 @@ export const useCardsStore = create(
               get().clearStudiedCards();
             });
       },
+    }),
+    {
+      name: "cards",
+      storage: createJSONStorage(() => FileSystemAPI),
+    }
+  )
+);
+
+interface SettingsStore {
+  dailyGoal: number;
+  notifications: boolean;
+  setDailyGoal: (amount: number) => void;
+  switchNotifications: () => void;
+}
+
+export const useSettingsStore = create(
+  persist<SettingsStore>(
+    (set) => ({
+      dailyGoal: 15,
+      notifications: false,
+      setDailyGoal: (dailyGoal) => set({ dailyGoal }),
+      switchNotifications: () =>
+        set((state) => {
+          return { notifications: !state.notifications };
+        }),
     }),
     {
       name: "cards",

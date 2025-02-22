@@ -12,14 +12,16 @@ import {
 import { useColorScheme } from "nativewind";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
-import { useCardsStore, useUserStore } from "@/utils/store";
+import { useCardsStore, useSettingsStore, useUserStore } from "@/utils/store";
 import { router } from "expo-router";
-import { IconButton, Text } from "react-native-paper";
+import { IconButton, SegmentedButtons, Text } from "react-native-paper";
 
 export default function Settings() {
   const { colorScheme, setColorScheme } = useColorScheme();
   const { user, setUser } = useUserStore();
-  const { fetchDecks } = useCardsStore();
+  const fetchDecks = useCardsStore((state) => state.fetchDecks);
+  const { dailyGoal, notifications, setDailyGoal, switchNotifications } =
+    useSettingsStore();
 
   const changeColorSheme = (sheme: "light" | "dark" | "system") => {
     setColorScheme(sheme);
@@ -91,8 +93,21 @@ export default function Settings() {
           />
         </View>
       </Setting>
+      <SegmentedButtons
+        buttons={[
+          { value: "5", label: "5" },
+          { value: "10", label: "10" },
+          { value: "15", label: "15" },
+          { value: "25", label: "25" },
+        ]}
+        value={dailyGoal.toString()}
+        onValueChange={(value) => setDailyGoal(+value)}
+      />
       <Setting title="Notifications">
-        <Button title="turn on" />
+        <Button
+          title={`Turn ${notifications ? "off" : "on"}`}
+          onPress={() => switchNotifications()}
+        />
       </Setting>
       <Setting title="Sync cards">
         <IconButton
